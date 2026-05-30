@@ -23,5 +23,7 @@ export const Feed: FC = () => {
     return <Preloader />; // если данные загружаются или нет заказов, отображаем прелоадер
   }
 
-  <FeedUI orders={orders} handleGetFeeds={() => dispatch(fetchFeeds())} />; // отображаем UI компонент, передавая заказы и функцию для получения данных о заказах при необходимости
+  return (
+    <FeedUI orders={orders} handleGetFeeds={() => dispatch(fetchFeeds())} />
+  );
 };

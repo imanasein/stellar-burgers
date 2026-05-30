@@ -15,23 +15,12 @@ import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  // const orderData = {
-  //   createdAt: '',
-  //   ingredients: [],
-  //   _id: '',
-  //   status: '',
-  //   name: '',
-  //   updatedAt: 'string',
-  //   number: 0
-  // };
   const { number } = useParams<{ number: string }>();
   const dispatch = useDispatch();
   const orderData = useSelector(currentOrderSelector);
   const loading = useSelector(currentOrderLoadingSelector);
   const ingredients = useSelector(ingredientsSelector);
 
-  // const ingredients: TIngredient[] = [];
   useEffect(() => {
     if (number) {
       dispatch(fetchOrderByNumber(Number(number)));
@@ -41,10 +30,7 @@ export const OrderInfo: FC = () => {
     };
   }, [number, dispatch]);
 
-  if (loading || !orderData || !ingredients.length) {
-    return <Preloader />;
-  }
-  /* Готовим данные для отображения */
+  // Хук useMemo вызывается всегда, даже если данных ещё нет
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -67,10 +53,9 @@ export const OrderInfo: FC = () => {
         } else {
           acc[item].count++;
         }
-
         return acc;
       },
-      {}
+      {} as TIngredientsWithCount
     );
 
     const total = Object.values(ingredientsInfo).reduce(
@@ -86,7 +71,8 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo) {
+  // Условный возврат теперь после всех хуков
+  if (loading || !orderData || !orderInfo) {
     return <Preloader />;
   }
 

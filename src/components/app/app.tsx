@@ -15,14 +15,13 @@ import { useDispatch } from '../../services/store';
 import { checkUserAuth } from '../../services/authSlice';
 import { fetchIngredients } from '../../services/ingredientsSlice';
 
-// import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { ProtectedRoute } from '../protectedRoute';
 
 const App = () => {
-  const dispatch = useDispatch(); // Получаем функцию dispatch из нашего кастомного хука, которая уже знает типизацию
+  const dispatch = useDispatch(); // Получаем функцию dispatch из нашего кастомного хука
 
   useEffect(() => {
     dispatch(checkUserAuth()); // Проверяем авторизацию при загрузке приложения

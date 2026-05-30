@@ -14,6 +14,7 @@ import { createOrder, closeOrderModal } from '../../services/orderSlice';
 import { clearConstructor } from '../../services/constructorSlice';
 import { useNavigate } from 'react-router-dom';
 import { fetchFeeds } from '../../services/feedSlice';
+import { fetchUserOrders } from '../../services/userOrdersSlice';
 
 export const BurgerConstructor: FC = () => {
   /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
@@ -51,13 +52,16 @@ export const BurgerConstructor: FC = () => {
       ...constructorItems.ingredients.map((item) => item._id),
       constructorItems.bun._id
     ];
+
     dispatch(createOrder(ingredientIds)) // создаём заказ
       .unwrap() // unwrap для получения результата промиса
       .then(() => {
         // после успешного создания заказа
         dispatch(fetchFeeds()); // обновление ленты заказов
+        dispatch(fetchUserOrders()); // обновляем историю заказов текущего пользователя
       });
   };
+
   const closeModal = () => {
     dispatch(closeOrderModal());
     // если нужно, очистить конструктор после закрытия модалки

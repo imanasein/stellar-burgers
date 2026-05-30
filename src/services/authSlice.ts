@@ -43,7 +43,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<TUser>) => {
+    setUser: (state, action: PayloadAction<TUser | null>) => {
       state.user = action.payload; //  после регистрации можно было сразу сохранить пользователя в Redux
     }
   },
