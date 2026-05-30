@@ -2,27 +2,38 @@ import { FC } from 'react';
 
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
+import { useSelector } from '../../services/store';
+import {
+  feedOrdersSelector,
+  feedTotalSelector,
+  feedTotalTodaySelector
+} from '../../services/selectors';
 
-const getOrders = (orders: TOrder[], status: string): number[] =>
+const getOrders = (
+  orders: TOrder[],
+  status: string
+): number[] => // Получаем номера заказов по статусу
   orders
-    .filter((item) => item.status === status)
-    .map((item) => item.number)
-    .slice(0, 20);
+    .filter((item) => item.status === status) // Фильтруем заказы по статусу
+    .map((item) => item.number) // Получаем номера заказов
+    .slice(0, 20); // Ограничиваем количество отображаемых заказов до 20
 
 export const FeedInfo: FC = () => {
   /** TODO: взять переменные из стора */
-  const orders: TOrder[] = [];
-  const feed = {};
+  // const orders: TOrder[] = [];
+  // const feed = {};
+  const orders = useSelector(feedOrdersSelector); // Получаем заказы из стора
+  const total = useSelector(feedTotalSelector); // Получаем общее количество выполненных заказов из стора
+  const totalToday = useSelector(feedTotalTodaySelector); // Получаем количество выполненных заказов за сегодня из стора
 
   const readyOrders = getOrders(orders, 'done');
-
   const pendingOrders = getOrders(orders, 'pending');
 
   return (
     <FeedInfoUI
       readyOrders={readyOrders}
       pendingOrders={pendingOrders}
-      feed={feed}
+      feed={{ total, totalToday }} // Передаем данные о заказах и статистику в UI компонент для отображения
     />
   );
 };
