@@ -9,7 +9,7 @@ import {
   Register,
   ResetPassword
 } from '@pages';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from '../../services/store';
 import { checkUserAuth } from '../../services/authSlice';
@@ -22,6 +22,7 @@ import { ProtectedRoute } from '../protectedRoute';
 
 const App = () => {
   const dispatch = useDispatch(); // Получаем функцию dispatch из нашего кастомного хука
+  const navigate = useNavigate(); // Получаем функцию навигации
 
   useEffect(() => {
     dispatch(checkUserAuth()); // Проверяем авторизацию при загрузке приложения
@@ -34,7 +35,6 @@ const App = () => {
       <Routes>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
-        {/* Гостевые маршруты (только для неавторизованных) */}
         <Route
           path='/login'
           element={
@@ -88,10 +88,7 @@ const App = () => {
         <Route
           path='/feed/:number'
           element={
-            <Modal
-              title='Информация о заказе' // Проверить что присать в заголовок
-              onClose={() => window.history.back()} // Переделать
-            >
+            <Modal title='#' onClose={() => navigate(-1)}>
               <OrderInfo />
             </Modal>
           }
@@ -99,10 +96,7 @@ const App = () => {
         <Route
           path='/ingredients/:id'
           element={
-            <Modal
-              title='Детали ингредиента' // Проверить что присать в заголовок
-              onClose={() => window.history.back()} // Переделать
-            >
+            <Modal title='Детали ингредиента' onClose={() => navigate(-1)}>
               <IngredientDetails />
             </Modal>
           }
@@ -111,10 +105,7 @@ const App = () => {
           path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <Modal
-                title='Информация о заказе' // Проверить что присать в заголовок
-                onClose={() => window.history.back()} // Переделать
-              >
+              <Modal title='#' onClose={() => navigate(-1)}>
                 <OrderInfo />
               </Modal>
             </ProtectedRoute>

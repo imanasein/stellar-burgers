@@ -17,4 +17,3 @@ root.render(
     </Provider>
   </React.StrictMode>
 );
-// Без <Provider store={store}> ваши хуки useDispatch и useSelector не увидят стор.

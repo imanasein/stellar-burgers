@@ -17,7 +17,6 @@ import { fetchFeeds } from '../../services/feedSlice';
 import { fetchUserOrders } from '../../services/userOrdersSlice';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,24 +25,13 @@ export const BurgerConstructor: FC = () => {
   const orderModalData = useSelector(orderModalDataSelector);
   const user = useSelector(userDataSelector);
   const isAuthChecked = useSelector(isAuthCheckedSelector);
-  // const constructorItems = {
-  //   bun: {
-  //     price: 0
-  //   },
-  //   ingredients: []
-  // };
-
-  // const orderRequest = false;
-
-  // const orderModalData = null;
 
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
     if (!isAuthChecked) return; // ещё проверяем токен
 
     if (!user) {
-      // Не авторизован – отправляем на логин, запомнив, откуда пришли
-      navigate('/login', { state: { from: '/' } });
+      navigate('/login');
       return;
     }
     // Авторизован – создаём заказ
@@ -54,9 +42,8 @@ export const BurgerConstructor: FC = () => {
     ];
 
     dispatch(createOrder(ingredientIds)) // создаём заказ
-      .unwrap() // unwrap для получения результата промиса
+      .unwrap()
       .then(() => {
-        // после успешного создания заказа
         dispatch(fetchFeeds()); // обновление ленты заказов
         dispatch(fetchUserOrders()); // обновляем историю заказов текущего пользователя
       });
@@ -64,7 +51,6 @@ export const BurgerConstructor: FC = () => {
 
   const closeModal = () => {
     dispatch(closeOrderModal());
-    // если нужно, очистить конструктор после закрытия модалки
     dispatch(clearConstructor());
   };
 
@@ -77,8 +63,6 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-
-  // return null;
 
   return (
     <BurgerConstructorUI

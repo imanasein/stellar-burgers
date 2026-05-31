@@ -17,8 +17,8 @@ const initialState: CurrentOrderState = {
 export const fetchOrderByNumber = createAsyncThunk(
   'currentOrder/fetchByNumber',
   async (number: number) => {
-    const response = await getOrderByNumberApi(number); // Получаем заказ по номеру с сервера
-    return response.orders[0]; // API возвращает массив, берём первый
+    const response = await getOrderByNumberApi(number);
+    return response.orders[0];
   }
 );
 
@@ -33,7 +33,7 @@ const currentOrderSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchOrderByNumber.pending, (state) => {
-        state.loading = true; // Проверить нужен ли флаг загрузки для страницы заказа
+        state.loading = true;
         state.error = null;
       })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {

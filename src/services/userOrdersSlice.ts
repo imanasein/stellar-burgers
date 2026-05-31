@@ -17,8 +17,8 @@ const initialState: UserOrdersState = {
 export const fetchUserOrders = createAsyncThunk(
   'userOrders/fetch',
   async () => {
-    const orders = await getOrdersApi(); // Получаем заказы пользователя с сервера
-    return orders; // массив заказов
+    const orders = await getOrdersApi();
+    return orders; // дынные вида: TOrder[]
   }
 );
 
@@ -29,7 +29,7 @@ const userOrdersSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserOrders.pending, (state) => {
-        state.loading = true; // проверить нужен ли флаг загрузки для истории заказов
+        state.loading = true;
         state.error = null;
       })
       .addCase(fetchUserOrders.fulfilled, (state, action) => {

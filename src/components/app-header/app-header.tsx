@@ -5,26 +5,25 @@ import { userDataSelector } from '../../services/selectors';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export const AppHeader: FC = () => {
-  const navigate = useNavigate(); // Получаем функцию навигации из react-router-dom
-  const location = useLocation(); // Получаем информацию о текущем местоположении
-  const user = useSelector(userDataSelector); // Получаем данные пользователя из стора
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useSelector(userDataSelector);
   const userName = user?.name || '';
 
   const handleProfileClick = () => {
     if (user) {
-      navigate('/profile'); // Если пользователь авторизован, перенаправляем на страницу профиля
+      navigate('/profile');
     } else {
-      // перенаправляем на логин, указывая, что пользователь хотел попасть в профиль
-      navigate('/login', { state: { from: '/profile' } });
+      navigate('/login');
     }
   };
 
   const handleConstructorClick = () => {
-    navigate('/'); // Перенаправляем на главную страницу с конструктором бургеров
+    navigate('/');
   };
 
   const handleFeedClick = () => {
-    navigate('/feed'); // Перенаправляем на страницу ленты заказов
+    navigate('/feed');
   };
 
   // Определяем активный маршрут

@@ -13,14 +13,13 @@ export const ProfileMenu: FC = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutApi(); // запрос на выход
+      await logoutApi();
     } catch (err) {
-      // можно обработать ошибку, но всё равно чистим данные
     } finally {
-      localStorage.removeItem('refreshToken'); // удаляем refreshToken из localStorage
-      deleteCookie('accessToken'); // удаляем accessToken из cookie
-      dispatch(setUser(null as any)); // очищаем пользователя в сторе (если setUser принимает null, приведите тип)
-      navigate('/login', { replace: true }); // перенаправляем на страницу входа, заменяя текущую запись в истории
+      localStorage.removeItem('refreshToken');
+      deleteCookie('accessToken');
+      dispatch(setUser(null));
+      navigate('/login', { replace: true });
     }
   };
 

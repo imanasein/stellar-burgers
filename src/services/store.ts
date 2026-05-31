@@ -13,7 +13,6 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-// Объект редьюсеров – сюда легко добавлять новые слайсы
 const rootReducer = {
   auth: authReducer, // Редьюсер для управления состоянием аутентификации
   ingredients: ingredientsReducer, // Редьюсер для управления состоянием ингредиентов
@@ -29,8 +28,7 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-export type RootState = ReturnType<typeof store.getState>; // было ранее <typeof rootReducer>;
-
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 export const useDispatch: () => AppDispatch = () => dispatchHook();

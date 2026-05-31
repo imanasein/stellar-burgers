@@ -10,17 +10,16 @@ import {
 } from '../../services/selectors';
 
 export const Feed: FC = () => {
-  /** TODO: взять переменную из стора */
-  const dispatch = useDispatch(); // получаем dispatch для отправки экшенов
-  const orders = useSelector(feedOrdersSelector); // получаем заказы из стора
-  const loading = useSelector(feedLoadingSelector); // получаем статус загрузки из стора
+  const dispatch = useDispatch();
+  const orders = useSelector(feedOrdersSelector);
+  const loading = useSelector(feedLoadingSelector);
 
   useEffect(() => {
     dispatch(fetchFeeds()); // при монтировании компонента отправляем экшен для получения данных о заказах
   }, [dispatch]);
 
   if (loading || !orders.length) {
-    return <Preloader />; // если данные загружаются или нет заказов, отображаем прелоадер
+    return <Preloader />;
   }
 
   return (

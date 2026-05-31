@@ -23,18 +23,17 @@ export const OrderInfo: FC = () => {
 
   useEffect(() => {
     if (number) {
-      dispatch(fetchOrderByNumber(Number(number)));
+      dispatch(fetchOrderByNumber(Number(number))); //если номер заказа есть, отправляем действие для получения данных заказа по номеру
     }
     return () => {
       dispatch(clearOrder());
     };
   }, [number, dispatch]);
 
-  // Хук useMemo вызывается всегда, даже если данных ещё нет
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
-    const date = new Date(orderData.createdAt);
+    const date = new Date(orderData.createdAt); //преобразуем дату создания заказа в объект Date
 
     type TIngredientsWithCount = {
       [key: string]: TIngredient & { count: number };
@@ -71,7 +70,6 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  // Условный возврат теперь после всех хуков
   if (loading || !orderData || !orderInfo) {
     return <Preloader />;
   }

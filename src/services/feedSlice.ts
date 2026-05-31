@@ -19,8 +19,8 @@ const initialState: FeedState = {
 };
 
 export const fetchFeeds = createAsyncThunk('feed/fetchFeeds', async () => {
-  const data = await getFeedsApi(); // получаем данные с сервера
-  return data; // { orders, total, totalToday }
+  const data = await getFeedsApi();
+  return data; // данные вида: { orders, total, totalToday }
 });
 
 const feedSlice = createSlice({
@@ -30,7 +30,7 @@ const feedSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchFeeds.pending, (state) => {
-        state.loading = true; // Проверить нужен ли флаг загрузки для ленты заказов
+        state.loading = true;
       })
       .addCase(fetchFeeds.fulfilled, (state, action) => {
         state.loading = false;

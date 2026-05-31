@@ -16,7 +16,6 @@ export const Login: FC = () => {
   const location = useLocation();
 
   const loginError = useSelector(loginErrorSelector);
-  const isLoading = useSelector(loginLoadingSelector);
 
   const from = (location.state as { from?: string })?.from || '/';
 
@@ -28,13 +27,13 @@ export const Login: FC = () => {
         navigate(from, { replace: true });
       })
       .catch(() => {
-        // ошибка уже сохранена в сторе
+        // ошибка уже сохранена в Redux через rejected
       });
   };
 
   return (
     <LoginUI
-      errorText=''
+      errorText={loginError || ''}
       email={email}
       setEmail={setEmail}
       password={password}

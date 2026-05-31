@@ -6,8 +6,8 @@ import { ForgotPasswordUI } from '@ui-pages';
 
 export const ForgotPassword: FC = () => {
   const [email, setEmail] = useState('');
-  const [error, setError] = useState<Error | null>(null);
-  const [loading, setLoading] = useState(false); // Учтанить насчёт загрузки
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -28,7 +28,7 @@ export const ForgotPassword: FC = () => {
 
   return (
     <ForgotPasswordUI
-      errorText={error?.message}
+      errorText={error || undefined}
       email={email}
       setEmail={setEmail}
       handleSubmit={handleSubmit}

@@ -19,12 +19,9 @@ const getOrders = (
     .slice(0, 20); // Ограничиваем количество отображаемых заказов до 20
 
 export const FeedInfo: FC = () => {
-  /** TODO: взять переменные из стора */
-  // const orders: TOrder[] = [];
-  // const feed = {};
-  const orders = useSelector(feedOrdersSelector); // Получаем заказы из стора
-  const total = useSelector(feedTotalSelector); // Получаем общее количество выполненных заказов из стора
-  const totalToday = useSelector(feedTotalTodaySelector); // Получаем количество выполненных заказов за сегодня из стора
+  const orders = useSelector(feedOrdersSelector);
+  const total = useSelector(feedTotalSelector);
+  const totalToday = useSelector(feedTotalTodaySelector);
 
   const readyOrders = getOrders(orders, 'done');
   const pendingOrders = getOrders(orders, 'pending');

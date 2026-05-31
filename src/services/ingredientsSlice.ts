@@ -14,12 +14,11 @@ const initialState: IngredientsState = {
   error: null
 };
 
-// получение ингредиентов
 export const fetchIngredients = createAsyncThunk(
   'ingredients/fetchIngredients',
   async () => {
     const data = await getIngredientsApi();
-    return data;
+    return data; // данные вида: { data: TIngredient[] }
   }
 );
 

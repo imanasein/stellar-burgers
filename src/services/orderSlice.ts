@@ -20,7 +20,7 @@ export const createOrder = createAsyncThunk(
   'order/create',
   async (ingredients: string[]) => {
     const response = await orderBurgerApi(ingredients);
-    return response.order;
+    return response.order; // данные вида: { order: { number: 1234 } }
   }
 );
 
@@ -40,7 +40,6 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.fulfilled, (state, action) => {
         state.orderRequest = false;
-        // Из всего ответа сохраняем только номер заказа ????? УТОЧНИТЬ
         state.orderModalData = { number: action.payload.number };
       })
       .addCase(createOrder.rejected, (state) => {

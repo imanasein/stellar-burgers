@@ -3,11 +3,11 @@ import { userDataSelector } from '@selectors';
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from '../../services/store';
+import { setUser } from '../../services/authSlice';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
   const dispatch = useDispatch();
-  const user = useSelector(userDataSelector); // стабильный объект из стора
+  const user = useSelector(userDataSelector);
 
   const [formValue, setFormValue] = useState({
     name: '',
@@ -20,10 +20,10 @@ export const Profile: FC = () => {
       setFormValue({
         name: user.name,
         email: user.email,
-        password: '' // для индикации, что пароль уже есть, но не показываем реальный
+        password: ''
       });
     }
-  }, [user]); // теперь зависимость – ссылка на user из стора, меняется только при реальном обновлении
+  }, [user]);
 
   const isFormChanged =
     formValue.name !== user?.name ||
@@ -39,8 +39,8 @@ export const Profile: FC = () => {
         email: formValue.email,
         password: formValue.password || undefined // если пароль не меняли – не отправляем
       });
-      // Обновим стор после успешного запроса
-      dispatch({ type: 'auth/setUser', payload: updatedUser.user }); // или используйте setUser из authSlice
+
+      dispatch(setUser(updatedUser.user));
       setFormValue((prev) => ({ ...prev, password: '' })); // сбрасываем пароль
     } catch (err) {
       console.error('Ошибка обновления профиля', err);

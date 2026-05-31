@@ -44,12 +44,12 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<TUser | null>) => {
-      state.user = action.payload; //  после регистрации можно было сразу сохранить пользователя в Redux
+      state.user = action.payload; //  после регистрации сохранить пользователя в Redux
     }
   },
   extraReducers: (builder) => {
     builder
-      // checkUserAuth - Проверка авторизации при старте
+      // Проверка авторизации при старте
       .addCase(
         checkUserAuth.fulfilled,
         (state, action: PayloadAction<TUser>) => {
@@ -59,9 +59,9 @@ const authSlice = createSlice({
       )
       .addCase(checkUserAuth.rejected, (state) => {
         state.user = null;
-        state.isAuthChecked = true; // Уточнить - даже при ошибке авторизации мы считаем проверку завершенной, чтобы не показывать загрузку бесконечно
+        state.isAuthChecked = true;
       })
-      // loginUser - Вход в систему
+      // Вход в систему
       .addCase(loginUser.pending, (state) => {
         state.loginLoading = true;
         state.loginError = null;
