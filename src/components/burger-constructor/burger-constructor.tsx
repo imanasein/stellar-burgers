@@ -44,14 +44,14 @@ export const BurgerConstructor: FC = () => {
     dispatch(createOrder(ingredientIds)) // создаём заказ
       .unwrap()
       .then(() => {
-        dispatch(fetchFeeds()); // обновление ленты заказов
+        dispatch(clearConstructor()); // очищаем конструктор после успешного заказа
         dispatch(fetchUserOrders()); // обновляем историю заказов текущего пользователя
+        dispatch(fetchFeeds()); // обновляем ленту заказов
       });
   };
 
   const closeModal = () => {
     dispatch(closeOrderModal());
-    dispatch(clearConstructor());
   };
 
   const price = useMemo(

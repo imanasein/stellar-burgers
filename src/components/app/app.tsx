@@ -9,7 +9,7 @@ import {
   Register,
   ResetPassword
 } from '@pages';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from '../../services/store';
 import { checkUserAuth } from '../../services/authSlice';
@@ -21,18 +21,22 @@ import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { ProtectedRoute } from '../protectedRoute';
 
 const App = () => {
-  const dispatch = useDispatch(); // Получаем функцию dispatch из нашего кастомного хука
-  const navigate = useNavigate(); // Получаем функцию навигации
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation(); // Получаем текущую локацию для определения, открывать ли модальное окно поверх текущей страницы
+
+  const locationState = location.state as { background?: Location }; // в location.state лежит background – тогда покажем модальное окно.
+  const background = locationState && locationState.background;
 
   useEffect(() => {
-    dispatch(checkUserAuth()); // Проверяем авторизацию при загрузке приложения
-    dispatch(fetchIngredients()); // загружаем ингредиенты при старте
+    dispatch(checkUserAuth());
+    dispatch(fetchIngredients());
   }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes>
+      <Routes location={background || location}>
         <Route path='/' element={<ConstructorPage />} />
         <Route path='/feed' element={<Feed />} />
         <Route
@@ -84,35 +88,50 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        {/* Модальные маршруты без проверки авторизации */}
-        <Route
-          path='/feed/:number'
-          element={
-            <Modal title='#' onClose={() => navigate(-1)}>
-              <OrderInfo />
-            </Modal>
-          }
-        />
-        <Route
-          path='/ingredients/:id'
-          element={
-            <Modal title='Детали ингредиента' onClose={() => navigate(-1)}>
-              <IngredientDetails />
-            </Modal>
-          }
-        />
+        {/* Страницы без модального окна (прямой переход) */}
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
         <Route
           path='/profile/orders/:number'
           element={
             <ProtectedRoute>
-              <Modal title='#' onClose={() => navigate(-1)}>
-                <OrderInfo />
-              </Modal>
+              <OrderInfo />
             </ProtectedRoute>
           }
         />
         <Route path='*' element={<NotFound404 />} />
       </Routes>
+      {/* Модальные маршруты – отображаются только при наличии background */}
+      {background && (
+        <Routes>
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title='#' onClose={() => navigate(-1)}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/ingredients/:id'
+            element={
+              <Modal title='Детали ингредиента' onClose={() => navigate(-1)}>
+                <IngredientDetails />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <ProtectedRoute>
+                <Modal title='#' onClose={() => navigate(-1)}>
+                  <OrderInfo />
+                </Modal>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      )}
     </div>
   );
 };
