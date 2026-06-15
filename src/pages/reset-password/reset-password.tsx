@@ -8,17 +8,18 @@ export const ResetPassword: FC = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setError(null);
-    resetPasswordApi({ password, token })
-      .then(() => {
-        localStorage.removeItem('resetPassword');
-        navigate('/login');
-      })
-      .catch((err) => setError(err));
+
+    try {
+      await resetPasswordApi({ password, token });
+      navigate('/login', { replace: true });
+    } catch (err: any) {
+      setError(err.message || 'Ошибка сброса пароля');
+    }
   };
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export const ResetPassword: FC = () => {
 
   return (
     <ResetPasswordUI
-      errorText={error?.message}
+      errorText={error || undefined}
       password={password}
       token={token}
       setPassword={setPassword}
