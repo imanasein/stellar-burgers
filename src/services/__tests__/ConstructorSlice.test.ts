@@ -8,7 +8,7 @@ import burgerConstructorReducer, {
   moveIngredientDown,
   moveIngredientUp,
   removeIngredient
-} from '../services/constructorSlice';
+} from '../constructorSlice';
 
 // Создадим моковые данные для тестов
 

@@ -3,7 +3,7 @@ import type { TIngredient } from '@utils-types';
 
 import ingredientsReducer, {
   fetchIngredients
-} from '../services/ingredientsSlice';
+} from '../ingredientsSlice';
 
 // создадим моковые данные
 const mockIngredients: TIngredient[] = [
