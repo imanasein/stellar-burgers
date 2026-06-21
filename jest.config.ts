@@ -25,7 +25,7 @@ const config: JestConfigWithTsJest = {
   // collectCoverageFrom: undefined,
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -33,7 +33,7 @@ const config: JestConfigWithTsJest = {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
@@ -150,6 +150,9 @@ const config: JestConfigWithTsJest = {
   // The test environment that will be used for testing
   testEnvironment: 'node',
 
+  //чтобы Jest запускал только unit-тесты из папки __tests__
+  testMatch: ['<rootDir>/src/**/__tests__/**/*.test.ts'],
+
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
 
@@ -177,16 +180,16 @@ const config: JestConfigWithTsJest = {
   // testRunner: "jest-circus/runner",
 
   // A map from regular expressions to paths to transformers
-transform: {
-          // '^.+\\.[tj]sx?$' для обработки файлов js/ts с помощью `ts-jest`
-          // '^.+\\.m?[tj]sx?$' для обработки файлов js/ts/mjs/mts с помощью `ts-jest`
-          '^.+\\.tsx?$': [
-            'ts-jest',
-            {
-              tsconfig: './tsconfig.json', // Укажите путь к вашему tsconfig.json
-            },
-          ],
-        },
+  transform: {
+    // '^.+\\.[tj]sx?$' для обработки файлов js/ts с помощью `ts-jest`
+    // '^.+\\.m?[tj]sx?$' для обработки файлов js/ts/mjs/mts с помощью `ts-jest`
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: './tsconfig.json' // Укажите путь к вашему tsconfig.json
+      }
+    ]
+  }
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

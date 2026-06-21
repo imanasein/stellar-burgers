@@ -92,7 +92,7 @@ module.exports = {
     port: 4000,
     open: true,
     client: {
-      overlay: false
+      overlay: true
     }
   }
 };

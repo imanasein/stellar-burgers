@@ -1,9 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import type { TIngredient } from '@utils-types';
 
-import ingredientsReducer, {
-  fetchIngredients
-} from '../ingredientsSlice';
+import ingredientsReducer, { fetchIngredients } from '../ingredientsSlice';
 
 // создадим моковые данные
 const mockIngredients: TIngredient[] = [

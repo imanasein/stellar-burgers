@@ -1,9 +1,11 @@
 import { test, expect } from '@playwright/test';
-import { BUN_NAME, MAIN_NAME, ORDER_NUMBER } from './mocks/constants';
+// список констант для тестов
+const BUN_NAME = 'Краторная булка N-200i';
+const MAIN_NAME = 'Биокотлета из марсианской Магнолии';
+const ORDER_NUMBER = '12345';
 
 test.describe('Тестирование Конструктора бургера', () => {
   test.beforeEach(async ({ page }) => {
-    // Очистка состояния и установка авторизации
     await page.context().clearCookies();
     await page.addInitScript(() => {
       localStorage.clear();
@@ -18,78 +20,70 @@ test.describe('Тестирование Конструктора бургера'
       }
     ]);
 
-    // Мок GET /api/auth/user – всегда успешный ответ (пользователь авторизован)
-    await page.route('**/api/auth/user', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: true,
-          user: { email: 'test@example.com', name: 'Тест' }
-        })
-      });
-    });
-
-    // HAR только для ингредиентов (GET /api/ingredients)
     await page.routeFromHAR('./tests/hars/ingredients.har', {
       url: '**/api/ingredients',
       update: false
     });
-
-    // Ручной мок для POST /api/orders
-    await page.route('**/api/orders', async (route) => {
-      if (route.request().method() === 'POST') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            name: 'test order',
-            order: { number: ORDER_NUMBER }
-          })
-        });
-      } else {
-        await route.continue();
-      }
+    await page.routeFromHAR('./tests/hars/auth-user.har', {
+      url: '**/api/auth/user',
+      update: false
+    });
+    await page.routeFromHAR('./tests/hars/orders.har', {
+      url: '**/api/orders',
+      update: false
     });
 
-    // Открываем приложение
     await page.goto('/');
-
-    // Ждём появления текста булки – стабильный признак загрузки списка ингредиентов
     await page.getByText(BUN_NAME).first().waitFor({ state: 'visible' });
   });
 
   test('добавление булки и начинки в конструктор', async ({ page }) => {
     await page
-    .locator('li', { hasText: BUN_NAME })
-    .getByRole('button', { name: 'Добавить' })
-    .click();
+      .locator('li', { hasText: BUN_NAME })
+      .getByRole('button', { name: 'Добавить' })
+      .click();
 
     await page
-    .locator('li', { hasText: MAIN_NAME })
-    .getByRole('button', { name: 'Добавить' })
-    .click();
+      .locator('li', { hasText: MAIN_NAME })
+      .getByRole('button', { name: 'Добавить' })
+      .click();
 
-    await expect(page.getByText(`${BUN_NAME} (верх)`)).toBeVisible();
-    await expect(page.getByText(`${BUN_NAME} (низ)`)).toBeVisible();
+    // Проверки строго внутри конструктора
+    await expect(
+      page
+        .locator('[data-testid="constructor-ingredients"]')
+        .getByText(`${BUN_NAME} (верх)`)
+    ).toBeVisible();
+    await expect(
+      page
+        .locator('[data-testid="constructor-ingredients"]')
+        .getByText(`${BUN_NAME} (низ)`)
+    ).toBeVisible();
 
     await expect(
       page
-      .locator('[data-testid="constructor-ingredients"]')
-      .getByText(MAIN_NAME)
+        .locator('[data-testid="constructor-ingredients"]')
+        .getByText(MAIN_NAME)
     ).toBeVisible();
   });
 
   test('открытие модального окна ингредиента', async ({ page }) => {
     await page.locator('li', { hasText: BUN_NAME }).getByRole('link').click();
 
-    await expect(page.getByText('Детали ингредиента')).toBeVisible();
-    await expect(page.getByText(BUN_NAME).last()).toBeVisible();
+    // Проверки внутри модального окна
+    await expect(
+      page.getByTestId('modal').getByText('Детали ингредиента')
+    ).toBeVisible();
+    await expect(page.getByTestId('modal').getByText(BUN_NAME)).toBeVisible();
   });
 
   test('закрытие модального окна по крестику', async ({ page }) => {
     await page.locator('li', { hasText: BUN_NAME }).getByRole('link').click();
+
+    // Убедились, что модалка открылась
+    await expect(
+      page.getByTestId('modal').getByText('Детали ингредиента')
+    ).toBeVisible();
 
     await page.getByTestId('modal-close-button').click();
 
@@ -98,6 +92,11 @@ test.describe('Тестирование Конструктора бургера'
 
   test('закрытие модального окна по оверлею', async ({ page }) => {
     await page.locator('li', { hasText: BUN_NAME }).getByRole('link').click();
+
+    // Убедились, что модалка открылась
+    await expect(
+      page.getByTestId('modal').getByText('Детали ингредиента')
+    ).toBeVisible();
 
     await page.getByTestId('modal-overlay').click({
       position: { x: 5, y: 5 }
@@ -108,22 +107,36 @@ test.describe('Тестирование Конструктора бургера'
 
   test('создание заказа', async ({ page }) => {
     await page
-    .locator('li', { hasText: BUN_NAME })
-    .getByRole('button', { name: 'Добавить' })
-    .click();
+      .locator('li', { hasText: BUN_NAME })
+      .getByRole('button', { name: 'Добавить' })
+      .click();
 
     await page
-    .locator('li', { hasText: MAIN_NAME })
-    .getByRole('button', { name: 'Добавить' })
-    .click();
+      .locator('li', { hasText: MAIN_NAME })
+      .getByRole('button', { name: 'Добавить' })
+      .click();
 
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
-    await expect(page.getByText(ORDER_NUMBER)).toBeVisible();
-    await expect(page.getByText('идентификатор заказа')).toBeVisible();
+    // Номер заказа и подпись внутри модального окна
+    await expect(
+      page.getByTestId('modal').getByText(ORDER_NUMBER)
+    ).toBeVisible();
+    await expect(
+      page.getByTestId('modal').getByText('идентификатор заказа')
+    ).toBeVisible();
 
-    await expect(page.getByText('Выберите булки').first()).toBeVisible();
-    await expect(page.getByText('Выберите начинку').first()).toBeVisible();
+    // Плейсхолдеры очищенного конструктора ищем только внутри него
+    await expect(
+      page
+        .locator('[data-testid="constructor-ingredients"]')
+        .getByText('Выберите булки')
+    ).toBeVisible();
+    await expect(
+      page
+        .locator('[data-testid="constructor-ingredients"]')
+        .getByText('Выберите начинку')
+    ).toBeVisible();
 
     await page.getByTestId('modal-close-button').click();
 

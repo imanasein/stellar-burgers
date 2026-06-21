@@ -9,3 +9,7 @@ dist
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Test coverage
+coverage/
+.nyc_output/
