@@ -106,6 +106,7 @@ test.describe('Тестирование Конструктора бургера'
   });
 
   test('создание заказа', async ({ page }) => {
+    // Добавляем булку и начинку
     await page
       .locator('li', { hasText: BUN_NAME })
       .getByRole('button', { name: 'Добавить' })
@@ -116,9 +117,10 @@ test.describe('Тестирование Конструктора бургера'
       .getByRole('button', { name: 'Добавить' })
       .click();
 
+    // Оформляем заказ
     await page.getByRole('button', { name: 'Оформить заказ' }).click();
 
-    // Номер заказа и подпись внутри модального окна
+    // Проверяем содержимое модального окна заказа
     await expect(
       page.getByTestId('modal').getByText(ORDER_NUMBER)
     ).toBeVisible();
@@ -126,20 +128,32 @@ test.describe('Тестирование Конструктора бургера'
       page.getByTestId('modal').getByText('идентификатор заказа')
     ).toBeVisible();
 
-    // Плейсхолдеры очищенного конструктора ищем только внутри него
+    // Проверяем, что конструктор очистился – появились плейсхолдеры
+    // Два плейсхолдера "Выберите булки" (верх/низ) – уточняем .first() и .nth(1)
     await expect(
       page
         .locator('[data-testid="constructor-ingredients"]')
         .getByText('Выберите булки')
+        .first()
     ).toBeVisible();
+    await expect(
+      page
+        .locator('[data-testid="constructor-ingredients"]')
+        .getByText('Выберите булки')
+        .nth(1)
+    ).toBeVisible();
+
+    // Плейсхолдер для начинки
     await expect(
       page
         .locator('[data-testid="constructor-ingredients"]')
         .getByText('Выберите начинку')
     ).toBeVisible();
 
+    // Закрываем модальное окно заказа
     await page.getByTestId('modal-close-button').click();
 
+    // Убеждаемся, что номер заказа исчез
     await expect(page.getByText(ORDER_NUMBER)).not.toBeVisible();
   });
 
