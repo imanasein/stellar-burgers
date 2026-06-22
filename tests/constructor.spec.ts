@@ -51,19 +51,15 @@ test.describe('Тестирование Конструктора бургера'
     // Проверки строго внутри конструктора
     await expect(
       page
-        .locator('[data-testid="constructor-ingredients"]')
+        .getByTestId('constructor-ingredients')
         .getByText(`${BUN_NAME} (верх)`)
     ).toBeVisible();
     await expect(
-      page
-        .locator('[data-testid="constructor-ingredients"]')
-        .getByText(`${BUN_NAME} (низ)`)
+      page.getByTestId('constructor-ingredients').getByText(`${BUN_NAME} (низ)`)
     ).toBeVisible();
 
     await expect(
-      page
-        .locator('[data-testid="constructor-ingredients"]')
-        .getByText(MAIN_NAME)
+      page.getByTestId('constructor-ingredients').getByText(MAIN_NAME)
     ).toBeVisible();
   });
 
@@ -132,22 +128,20 @@ test.describe('Тестирование Конструктора бургера'
     // Два плейсхолдера "Выберите булки" (верх/низ) – уточняем .first() и .nth(1)
     await expect(
       page
-        .locator('[data-testid="constructor-ingredients"]')
+        .getByTestId('constructor-ingredients')
         .getByText('Выберите булки')
         .first()
     ).toBeVisible();
     await expect(
       page
-        .locator('[data-testid="constructor-ingredients"]')
+        .getByTestId('constructor-ingredients')
         .getByText('Выберите булки')
         .nth(1)
     ).toBeVisible();
 
     // Плейсхолдер для начинки
     await expect(
-      page
-        .locator('[data-testid="constructor-ingredients"]')
-        .getByText('Выберите начинку')
+      page.getByTestId('constructor-ingredients').getByText('Выберите начинку')
     ).toBeVisible();
 
     // Закрываем модальное окно заказа
